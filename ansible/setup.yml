@@ -1,0 +1,22 @@
+---
+- hosts: all
+  tasks:
+    - name: Update package repos
+      raw: apt -y update
+
+    - name: Ensure nginx is at the latest version
+      apt: name=nginx state=latest
+
+    - name: start nginx
+      service:
+        name: nginx
+        state: started
+- hosts: edges
+  tasks:
+    - name: Ensure varnish is installed and latest
+      apt: name=varnish state=latest
+
+    - name: start varnish
+      service:
+        name: varnish
+        state: started
