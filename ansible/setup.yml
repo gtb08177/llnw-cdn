@@ -1,9 +1,17 @@
 ---
 - hosts: all
   tasks:
-    - name: Update package repos
-      raw: apt -y update
+    - name: Update repositories
+      apt:
+        update_cache: yes
 
+    # Too long to run for the purpose of a demonstration
+    # and not particularly safe as a raw task.
+    # - name: Install pending security updates
+    #   raw: sudo unattended-upgrade -d
+
+- hosts: origin
+  tasks:
     - name: Ensure nginx is at the latest version
       apt: name=nginx state=latest
 
@@ -11,6 +19,7 @@
       service:
         name: nginx
         state: started
+
 - hosts: edges
   tasks:
     - name: Ensure varnish is installed and latest
