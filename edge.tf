@@ -1,3 +1,7 @@
+locals {
+  edge_count = 2
+}
+
 # Create one or more instances of AWS Lightsail.
 # Good benefit is has a static IP by default.
 resource "aws_lightsail_instance" "edge" {
@@ -6,7 +10,7 @@ resource "aws_lightsail_instance" "edge" {
     blueprint_id = "ubuntu_18_04"
     bundle_id = "nano_1_0"
     key_pair_name = aws_lightsail_key_pair.ryan.name # Pulls from resource living in shared.tf
-    count = "2"
+    count = local.edge_count
 }
 
 # Create the A records in R53 for ALL the edges defined above
@@ -16,7 +20,7 @@ resource "aws_route53_record" "edge_servers" {
     type = "A"
     ttl = "60"
     records = [aws_lightsail_instance.edge.*.public_ip_address[count.index]] # .* due to multiple edges thanks to count above.
-    count = "2" # TODO pull out to variable to drive with the block above
+    count = local.edge_count
 }
 
 # Create the A records in R53 for the 'cdn' host with all edge
