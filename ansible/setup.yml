@@ -1,5 +1,6 @@
 ---
 - hosts: all
+  become: yes
   tasks:
     - name: Update repositories
       apt:
@@ -11,19 +12,15 @@
     #   raw: sudo unattended-upgrade -d
 
 - hosts: origin
+  become: yes
   tasks:
     - name: Ensure nginx is at the latest version
       apt: name=nginx state=latest
 
-    # - name: Copy nginx config
-    #   copy:
-    #     src:
-    #     dest:
-
     - name: Copy customised index page
       copy:
         src: ./resources/index.html
-        dest: /var/www/html/index.nginx-debian.html
+        dest: /var/www/html/index.html
 
     - name: start nginx
       service:
@@ -31,16 +28,61 @@
         state: started
 
 - hosts: edges
+  become: yes
   tasks:
+    - name: Add an Apt signing key
+      apt_key:
+        url: https://packagecloud.io/varnishcache/varnish60lts/gpgkey
+        state: present
+
+    # official repo for varnish
+    - name: Adding official varnish app repo
+      apt_repository:
+        repo: "{{ item }} {{ ansible_distribution_release }} main"
+        state: present
+      with_items:
+        - "deb https://packagecloud.io/varnishcache/varnish60lts/ubuntu/"
+        - "deb-src https://packagecloud.io/varnishcache/varnish60lts/ubuntu/"
+
     - name: Ensure varnish is installed and latest
-      apt: name=varnish state=latest
+      apt:
+        name: varnish
+        state: latest
 
-    - name: Copy varnish config
+    ####### Need to update varnish.service to push to port 80
+    ####### Originally did this but then opted for regex as then only dependent
+    ####### one line as opposed to a file but could be useful in its own right.
+    # required
+    # - name: Copy varnish.service
+    #   copy:
+    #     src: varnish/varnish.service
+    #     dest: /lib/systemd/system/varnish.service
+
+    - name: Line in file
+      lineinfile:
+        path: /lib/systemd/system/varnish.service
+        regexp: "^ExecStart="
+        line: "ExecStart=/usr/sbin/varnishd -a :80 -T localhost:6082 -f /etc/varnish/default.vcl -s malloc,256m"
+      notify:
+        - restart varnish
+
+    # Copy the VCL to tell where the real origin is.
+    - name: Copy VCL
       copy:
-        src: ./varnish/default.vcl
+        src: varnish/default.vcl
         dest: /etc/varnish/default.vcl
+      notify:
+        - restart varnish
 
-    - name: start varnish
-      service:
+    - name: Make sure varnish is started
+      systemd:
         name: varnish
         state: started
+        daemon_reload: yes
+
+  handlers:
+    - name: restart varnish
+      systemd:
+        name: varnish
+        state: restarted
+        daemon_reload: yes
