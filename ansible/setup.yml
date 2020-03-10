@@ -15,6 +15,16 @@
     - name: Ensure nginx is at the latest version
       apt: name=nginx state=latest
 
+    # - name: Copy nginx config
+    #   copy:
+    #     src:
+    #     dest:
+
+    - name: Copy customised index page
+      copy:
+        src: ./resources/index.html
+        dest: /var/www/html/index.nginx-debian.html
+
     - name: start nginx
       service:
         name: nginx
@@ -24,6 +34,11 @@
   tasks:
     - name: Ensure varnish is installed and latest
       apt: name=varnish state=latest
+
+    - name: Copy varnish config
+      copy:
+        src: ./varnish/default.vcl
+        dest: /etc/varnish/default.vcl
 
     - name: start varnish
       service:
