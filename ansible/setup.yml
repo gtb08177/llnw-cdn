@@ -22,15 +22,25 @@
         src: ./resources/index.html
         dest: /var/www/html/index.html
 
+    - name: Create data images dir
+      file:
+        path: /data/images
+        state: directory
+
     - name: Sync push images to origin
       synchronize:
         src: resources/images/
-        dest: /var/www/html
+        dest: /data/images
 
-    - name: start nginx
+    - name: Push nginx conf
+      synchronize:
+        src: nginx/default
+        dest: /etc/nginx/sites-available
+
+    - name: Ensure nginx starts / restarts
       service:
         name: nginx
-        state: started
+        state: restarted
 
 - hosts: edges
   become: yes

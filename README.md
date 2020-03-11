@@ -27,10 +27,17 @@ SSL cert
 
 
 # Notes for demo
- curl -svo /dev/null http://localhost -X PURGE / curl -X PURGE http://edge-1.llnw.mcnulty.network/
- curl -svo /dev/null http://localhost/myfile -H "If-Modified-Since: Tue, 10 Mar 2020 21:09:22 GMT"
-# Running this within PSSH allows me to purge the local cache version on the box but also the client facing or header
-curl -svo /dev/null --resolve edge.llnw.mcnulty.network:80:127.0.0.1 http://edge.llnw.mcnulty.network/myfile -X PURGE
+curl -svo PURGE http://edge-1.llnw.mcnulty.network/ -H "x-secret-purge-header: yes"
+
+# If modified since
+curl -svo /dev/null http://edge.llnw.mcnulty.network/myfile -H "If-Modified-Since: Tue, 10 Mar 2020 21:09:22 GMT"
+
+# debug header
+curl -svo /dev/null http://edge.llnw.mcnulty.network/ -H "x-secret-debug-header: yes"
+
+
+#### Running this within PSSH allows me to purge the local cache version on the box but also the client facing or header
+curl -svo /dev/null --resolve edge.llnw.mcnulty.network:80:127.0.0.1 http://edge.llnw.mcnulty.network/myfile -X PURGE -H "x-secret-purge-header: yes"
 
 
 ### Useful Resources Found ###

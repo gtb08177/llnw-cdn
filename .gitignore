@@ -1,6 +1,9 @@
 # Ansible
 *.retry
 
+# Mac
+*.DS_Store
+
 # Local .terraform directories
 **/.terraform/*
 
