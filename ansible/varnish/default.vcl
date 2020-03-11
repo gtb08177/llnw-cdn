@@ -8,7 +8,6 @@ backend default {
     .port = "80";
 }
 
-
 sub vcl_recv {
     # Happens before we check if we have this in cache already.
     #

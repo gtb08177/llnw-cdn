@@ -22,6 +22,11 @@
         src: ./resources/index.html
         dest: /var/www/html/index.html
 
+    - name: Sync push images to origin
+      synchronize:
+        src: resources/images/
+        dest: /var/www/html
+
     - name: start nginx
       service:
         name: nginx
