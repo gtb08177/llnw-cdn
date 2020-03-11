@@ -8,9 +8,6 @@ backend default {
     .port = "80";
 }
 
-acl purge {
-    "localhost";
-}
 
 sub vcl_recv {
     # Happens before we check if we have this in cache already.
@@ -18,10 +15,9 @@ sub vcl_recv {
     # Typically you clean up the request here, removing cookies you don't need,
     # rewriting the request, etc.
 
-    # allow PURGE from localhost 
     if (req.method == "PURGE") {
-        if (!client.ip ~ purge) {
-                return(synth(405,"Not allowed."));
+        if (!req.http.x-secret-purge-header) {
+            return(synth(405,"Not allowed."));
         }
         return (purge);
     }
@@ -32,7 +28,6 @@ sub vcl_backend_response {
     #
     # Here you clean the response headers, removing silly Set-Cookie headers
     # and other mistakes your backend does.
-
     set beresp.http.cache-control = "public, max-age=600";
     unset beresp.http.server;
 }
@@ -43,9 +38,11 @@ sub vcl_deliver {
     #
     # You can do accounting or modifying the final object here.
     # TODO don't give this away to everyone - use a secret header.
-    if (obj.hits > 0) {
+    if (req.http.x-secret-debug-header) {
+        if (obj.hits > 0) {
             set resp.http.X-Cache = "HIT";
-    } else {
+        } else {
             set resp.http.X-Cache = "MISS";
+        }
     }
 }
