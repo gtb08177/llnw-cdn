@@ -56,6 +56,22 @@ server {
 		add_header	X-Origin-Header Yes;
     }
 
+    location /images/ferrari.jpg {
+        root /data;
+
+		# ferrari 
+		add_header	X-RYAN-Header 123
+		#add_header Cache-control no-cache;
+    }
+
+	location /images/renault.jpg {
+        root /data;
+
+		# ferrari 
+		add_header	X-renault-Header 123
+		#add_header Cache-control no-cache;
+    }
+
 	# pass PHP scripts to FastCGI server
 	#
 	#location ~ \.php$ {
