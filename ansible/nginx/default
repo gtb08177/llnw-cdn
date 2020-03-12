@@ -53,42 +53,28 @@ server {
 
     location /images/ {
         root /data;
-		add_header	X-Origin-Header Yes;
+		add_header Cache-control "public, max-age=600";
     }
 
     location /images/ferrari.jpg {
         root /data;
 
-		# ferrari 
-		add_header	X-RYAN-Header 123
-		#add_header Cache-control no-cache;
+		####################
+		# NO CACHE EXAMPLE #
+		####################
+
+		add_header Cache-control no-store;
     }
 
 	location /images/renault.jpg {
         root /data;
 
-		# ferrari 
-		add_header	X-renault-Header 123
-		#add_header Cache-control no-cache;
+		###########################
+		# 15 SECOND CACHE EXAMPLE #
+		###########################
+		add_header s-maxage 15;
     }
 
-	# pass PHP scripts to FastCGI server
-	#
-	#location ~ \.php$ {
-	#	include snippets/fastcgi-php.conf;
-	#
-	#	# With php-fpm (or other unix sockets):
-	#	fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
-	#	# With php-cgi (or other tcp sockets):
-	#	fastcgi_pass 127.0.0.1:9000;
-	#}
-
-	# deny access to .htaccess files, if Apache's document root
-	# concurs with nginx's one
-	#
-	#location ~ /\.ht {
-	#	deny all;
-	#}
 }
 
 

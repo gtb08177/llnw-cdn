@@ -28,10 +28,9 @@ sub vcl_backend_response {
     # Here you clean the response headers, removing silly Set-Cookie headers
     # and other mistakes your backend does.
 
-    
-    set beresp.http.cache-control = "public, max-age=600";
+    #set beresp.http.cache-control = "public, max-age=600";
     unset beresp.http.server;
-    unset beresp.http.X-Origin-Header;
+    unset beresp.http.s-maxage;
 }
 
 sub vcl_deliver {
