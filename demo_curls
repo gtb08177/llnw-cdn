@@ -1,0 +1,54 @@
+Demo 1 - open a browser and show the content is working
+
+
+
+
+
+# Demo-2  DNS Look up to see all possible edges involved.
+dig +short edge.llnw.mcnulty.network
+
+
+
+
+
+# Demo-3 Query edge for image
+curl -svo /dev/null http://edge.llnw.mcnulty.network/images/renault.jpg -H "x-secret-debug-header: yes" -w "Total time taken: %{time_total}\n"
+
+# compare this with going to origin request time
+curl -svo /dev/null http://origin.llnw.mcnulty.network/images/renault.jpg -w "Total time taken: %{time_total}\n"
+
+
+
+
+DEMO FERRARI NOT HAVING CACHE
+curl -svo /dev/null http://edge.llnw.mcnulty.network/images/ferrari.jpg -H "x-secret-debug-header: yes" -w "Total time taken: %{time_total}\n"
+
+
+
+# Demo-4 Demonstrate purge facility
+curl -svo /dev/null http://edge-1.llnw.mcnulty.network/images/mclaren.jpg -H "x-secret-debug-header: yes" -w "Total time taken: %{time_total}\n"
+curl -svo /dev/null http://edge-1.llnw.mcnulty.network/images/mclaren.jpg -X PURGE -H "x-secret-purge-header: yes"
+curl -svo /dev/null http://edge-1.llnw.mcnulty.network/images/mclaren.jpg -H "x-secret-debug-header: yes" -w "Total time taken: %{time_total}\n"
+
+
+
+
+
+# Demo-5 Show how clients would validate if the content they have has changed.
+# Advantage:  it is lightweight. 
+curl -svo /dev/null http://edge.llnw.mcnulty.network/images/mclaren.jpg -H "If-Modified-Since: Thurs, 12 Mar 2020 10:37:58 GMT"
+
+
+
+
+
+# Demo-6 Apache bench demonstration
+ab -n 100 -c 10 http://edge.llnw.mcnulty.network/images/mclaren.jpg  
+
+ab -n 100 -c 10 http://origin.llnw.mcnulty.network/images/mclaren.jpg
+
+
+
+
+
+# Demo-7 SSH to an edge and show logs

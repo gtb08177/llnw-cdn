@@ -53,7 +53,7 @@ server {
 
     location /images/ {
         root /data;
-		add_header Cache-control "public, max-age=600";
+		add_header Cache-Control "public, max-age=600";
     }
 
     location /images/ferrari.jpg {
@@ -63,16 +63,16 @@ server {
 		# NO CACHE EXAMPLE #
 		####################
 
-		add_header Cache-control no-store;
+		add_header Cache-Control no-store; # tell edge not to cache nor the client
     }
 
 	location /images/renault.jpg {
         root /data;
 
-		###########################
-		# 15 SECOND CACHE EXAMPLE #
-		###########################
-		add_header s-maxage 15;
+		#############################
+		# 10 SECOND CLIENT  EXAMPLE #
+		#############################
+		add_header Cache-Control "s-maxage=600, max-age=10"; # Client keep for 10s - varnish, keep it for 600
     }
 
 }

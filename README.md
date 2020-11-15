@@ -24,16 +24,6 @@ Fallback index.html on nginx lives at `sudo vim /usr/share/nginx/html/index.html
 `terraform show | egrep "^#"` list terraform by name
 Remember cache key will involve the host name i.e. localhost is not the same as edge-1.llnw.mcnulty.network so need to cater for both in purge
 
-# Nice future thoughts / stretch targets
-
-
-
-# Notes for demo
-curl -svo PURGE http://edge-1.llnw.mcnulty.network/ -H "x-secret-purge-header: yes"
-
-# If modified since
-curl -svo /dev/null http://edge.llnw.mcnulty.network/myfile -H "If-Modified-Since: Tue, 10 Mar 2020 21:09:22 GMT"
-
 # debug header
 curl -svo /dev/null http://edge.llnw.mcnulty.network/ -H "x-secret-debug-header: yes"
 
@@ -45,7 +35,6 @@ curl -svo /dev/null --resolve edge.llnw.mcnulty.network:80:127.0.0.1 http://edge
 ### Useful Resources Found ###
 https://varnish-cache.org/docs/trunk/users-guide/vcl-hashing.html
 https://linux.die.net/man/1/pssh
-
 
 
 ### Nice Stretch Ideas
