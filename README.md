@@ -1,5 +1,5 @@
 ## llnw-cdn
-Technical interview task put forward by Limelight Network to build, implement and demonstrate a small content delivery network.
+Technical interview task put forward by Limelight Networks to build, implement and demonstrate a small content delivery network.
 
 ## Technology
 - Terraform
